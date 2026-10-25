@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bloc de Noticias | Listín Diario</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      color: #222;
+      line-height: 1.5;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #ccc;
+    }
+
+    .encabezado {
+      background: #b71c1c;
+      color: #fff;
+      text-align: center;
+      padding: 20px 16px 12px 16px;
+    }
+
+    .encabezado h1 {
+      font-size: 30px;
+    }
+
+    .encabezado h2 {
+      font-size: 14px;
+      font-weight: normal;
+      margin-top: 4px;
+      color: #ffcdd2;
+    }
+
+    .navegacion {
+      background: #d32f2f;
+      padding: 10px 0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .navegacion ul {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      gap: 15px;
+      flex-wrap: wrap;
+      padding: 0 10px;
+    }
+
+    .navegacion a {
+      color: #fff;
+      font-weight: bold;
+      font-size: 14px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+
+    .navegacion a:hover {
+      background: #b71c1c;
+    }
+
+    .carrusel {
+      width: 100%;
+      max-width: 1100px;
+      margin: 20px auto 0 auto;
+      overflow: hidden;
+      border-radius: 8px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    }
+
+    .slides {
+      display: flex;
+      width: 400%;
+      animation: mover 20s infinite;
+    }
+
+    .slide {
+      position: relative;
+      width: 25%;
+    }
+
+    .slide img {
+      height: 280px;
+      object-fit: cover;
+    }
+
+    .slide span {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      color: #fff;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    @keyframes mover {
+      0%, 20%   { transform: translateX(0); }
+      25%, 45%  { transform: translateX(-25%); }
+      50%, 70%  { transform: translateX(-50%); }
+      75%, 95%  { transform: translateX(-75%); }
+      100%      { transform: translateX(0); }
+    }
+
+    .contenedor-principal {
+      max-width: 1100px;
+      margin: 20px auto;
+      padding: 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .lista {
+      flex: 1;
+    }
+
+    .lista h2 {
+      margin-bottom: 16px;
+      color: #b71c1c;
+      border-bottom: 2px solid #b71c1c;
+      padding-bottom: 6px;
+    }
+
+    .contenedor-tarjetas {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .tarjeta {
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .tarjeta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .tarjeta-destacada {
+      grid-column: 1 / -1;
+      border: 2px solid #b71c1c;
+      background: #fff0f0;
+      position: relative;
+    }
+
+    .insignia-destacada {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: #b71c1c;
+      color: #fff;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 4px 8px;
+      border-radius: 4px;
+      z-index: 1;
+    }
+
+    .tarjeta a {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .tarjeta img {
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .tarjeta .texto {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-grow: 1;
+    }
+
+    .tarjeta h3 {
+      font-size: 16px;
+      color: #b71c1c;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .tarjeta p {
+      font-size: 14px;
+      color: #333;
+      margin-bottom: 12px;
+    }
+
+    .tarjeta time {
+      color: #777;
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    .barra-lateral {
+      background: #fff;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .barra-lateral h3 {
+      color: #b71c1c;
+      font-size: 18px;
+      border-bottom: 2px solid #f2f2f2;
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+    }
+
+    .barra-lateral ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .barra-lateral a {
+      color: #333;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .barra-lateral a:hover {
+      color: #b71c1c;
+      font-weight: bold;
+    }
+
+    .separador {
+      border: 0;
+      height: 1px;
+      background: #ddd;
+      margin: 20px 0;
+    }
+
+    .pagina-noticia {
+      display: none;
+    }
+
+    .pagina-noticia:target {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      background: #fff;
+      padding: 20px;
+      z-index: 100;
+    }
+
+    .pagina-noticia img {
+      max-width: 800px;
+      margin: 12px auto;
+      border-radius: 8px;
+    }
+
+    .pagina-noticia h2 {
+      max-width: 800px;
+      margin: 0 auto 8px auto;
+      font-size: 24px;
+      color: #b71c1c;
+    }
+
+    .pagina-noticia .datos {
+      max-width: 800px;
+      margin: 0 auto 14px auto;
+      color: #777;
+      font-size: 14px;
+    }
+
+    .pagina-noticia p {
+      max-width: 800px;
+      margin: 0 auto 16px auto;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .volver {
+      display: block;
+      max-width: 800px;
+      margin: 0 auto;
+      color: #b71c1c;
+      font-weight: bold;
+    }
+
+    .leer {
+      display: block;
+      max-width: 800px;
+      margin: 0 auto 30px auto;
+      background: #b71c1c;
+      color: #fff;
+      text-align: center;
+      padding: 12px;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .pie {
+      background: #222;
+      color: #fff;
+      text-align: center;
+      padding: 16px;
+      font-size: 13px;
+      margin-top: 20px;
+    }
+
+    @media screen and (min-width: 600px) {
+      .slide img {
+        height: 350px;
+      }
+
+      .contenedor-tarjetas {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .encabezado h1 {
+        font-size: 32px;
+      }
+    }
+
+    @media screen and (min-width: 992px) {
+      .slide img {
+        height: 400px;
+      }
+
+      .contenedor-principal {
+        flex-direction: row;
+      }
+
+      .lista {
+        flex: 3;
+      }
+
+      .barra-lateral {
+        flex: 1;
+        height: fit-content;
+      }
+
+      .contenedor-tarjetas {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="encabezado">
+    <h1>Bloc de Noticias</h1>
+    <h2>Fuente informativa: Listín Diario — Edición Digital</h2>
+  </header>
+
+  <nav class="navegacion">
+    <ul>
+      <li><a href="#">Inicio</a></li>
+      <li><a href="#">República</a></li>
+      <li><a href="#">Provincias</a></li>
+      <li><a href="#">Entretenimiento</a></li>
+      <li><a href="#">Justicia</a></li>
+    </ul>
+  </nav>
+
+  <section class="carrusel">
+    <div class="slides">
+      <a class="slide" href="#noticia1">
+        <img src="https://listindiario.com/files/main_image/files/fp/uploads/2026/10/03/6ac1b4503ce99.r_d.72-416-0.jpeg" alt="Noticia 1">
+        <span>Detienen a haitiano acusado de la muerte de una señora en San Cristóbal</span>
+      </a>
+      <a class="slide" href="#noticia2">
+        <img src="https://listindiario.com/files/listing_secondary/files/fp/uploads/2026/02/21/699a1b611670b.r_d.554-398-0.jpeg" alt="Noticia 2">
+        <span>Yiyo Sarante lamenta asesinato de su cuñada</span>
+      </a>
+      <a class="slide" href="#noticia3">
+        <img src="https://listindiario.com/files/listing_secondary/uploads/2026/09/18/6aadb183beec6.jpeg" alt="Noticia 3">
+        <span>Encuentran cadáver con impacto de bala en El Seibo</span>
+      </a>
+      <a class="slide" href="#noticia4">
+        <img src="https://listindiario.com/files/listing_secondary/uploads/2026/07/14/6a565d32ba48c.jpeg" alt="Noticia 4">
+        <span>Se entrega expareja de joven hallada muerta en Santiago</span>
+      </a>
+    </div>
+  </section>
+
+  <main class="contenedor-principal">
+    
+    <section class="lista">
+      <h2>Últimas noticias</h2>
+
+      <div class="contenedor-tarjetas">
+        
+        <article class="tarjeta tarjeta-destacada">
+          <span class="insignia-destacada">DESTACADA</span>
+          <a href="#noticia1">
+            <img src="https://listindiario.com/files/main_image/files/fp/uploads/2026/10/03/6ac1b4503ce99.r_d.72-416-0.jpeg" alt="Noticia 1">
+            <div class="texto">
+              <h3>Detienen a haitiano acusado de la muerte de una señora de 78 años en San Cristóbal</h3>
+              <p>La <strong>Policía Nacional</strong> arrestó al acusado tras verificar cámaras de vigilancia cerca de la vivienda.</p>
+              <time datetime="2026-10-03">03/10/2026</time>
+            </div>
+          </a>
+        </article>
+
+        <article class="tarjeta">
+          <a href="#noticia2">
+            <img src="https://listindiario.com/files/listing_secondary/files/fp/uploads/2026/02/21/699a1b611670b.r_d.554-398-0.jpeg" alt="Noticia 2">
+            <div class="texto">
+              <h3>Yiyo Sarante lamenta asesinato de su cuñada: “No existen palabras suficientes”</h3>
+              <p>El conocido artista expresó <em>profundo dolor</em> ante la trágica situación que atraviesa su familia.</p>
+              <time datetime="2026-09-22">22/09/2026</time>
+            </div>
+          </a>
+        </article>
+
+        <article class="tarjeta">
+          <a href="#noticia3">
+            <img src="https://listindiario.com/files/listing_secondary/uploads/2026/09/18/6aadb183beec6.jpeg" alt="Noticia 3">
+            <div class="texto">
+              <h3>Encuentran cadáver de hombre con impacto de bala en El Seibo</h3>
+              <p>Las autoridades iniciaron las investigaciones correspondientes en la zona de <strong>Arroyo Tabaco</strong>.</p>
+              <time datetime="2026-09-18">18/09/2026</time>
+            </div>
+          </a>
+        </article>
+
+        <article class="tarjeta">
+          <a href="#noticia4">
+            <img src="https://listindiario.com/files/listing_secondary/uploads/2026/07/14/6a565d32ba48c.jpeg" alt="Noticia 4">
+            <div class="texto">
+              <h3>Se entrega expareja de joven hallada muerta en Santiago</h3>
+              <p>El sospechoso decidió entregarse a los agentes policiales para fines de <em>investigación judicial</em>.</p>
+              <time datetime="2026-07-14">14/07/2026</time>
+            </div>
+          </a>
+        </article>
+
+      </div>
+
+      <hr class="separador">
+
+      <div class="contenedor-tarjetas">
+        
+        <article class="tarjeta">
+          <a href="#noticia5">
+            <img src="https://listindiario.com/files/listing_secondary/uploads/2026/07/18/6a5bf7f696e87.png" alt="Noticia 5">
+            <div class="texto">
+              <h3>Prisión preventiva para una militar que mató a su suegra en Azua</h3>
+              <p>El tribunal acogió la solicitud presentada por el <strong>Ministerio Público</strong>.</p>
+              <time datetime="2026-07-30">30/07/2026</time>
+            </div>
+          </a>
+        </article>
+
+        <article class="tarjeta">
+          <a href="#noticia6">
+            <img src="https://listindiario.com/files/listing_secondary/uploads/2026/08/21/6a88f794d8dac.png" alt="Noticia 6">
+            <div class="texto">
+              <h3>Se entrega “Iker El Rabioso” en Los Alcarrizos</h3>
+              <p>Implicado en el fallecimiento de un dirigente comunitario de la zona.</p>
+              <time datetime="2026-08-21">21/08/2026</time>
+            </div>
+          </a>
+        </article>
+
+      </div>
+    </section>
+
+    <aside class="barra-lateral">
+      <section>
+        <h3>Categorías</h3>
+        <ul>
+          <li><a href="#">• República</a></li>
+          <li><a href="#">• Provincias</a></li>
+          <li><a href="#">• Entretenimiento</a></li>
+          <li><a href="#">• Justicia</a></li>
+          <li><a href="#">• Deportes</a></li>
+        </ul>
+      </section>
+
+      <section>
+        <h3>Más leídas</h3>
+        <ul>
+          <li><a href="#noticia1"><strong>1.</strong> Detienen a acusado en San Cristóbal</a></li>
+          <li><a href="#noticia2"><strong>2.</strong> Yiyo Sarante pide fortaleza</a></li>
+          <li><a href="#noticia3"><strong>3.</strong> Investigación en El Seibo</a></li>
+        </ul>
+      </section>
+    </aside>
+
+  </main>
+
+  <section class="pagina-noticia" id="noticia1">
+    <a class="volver" href="#">← Volver al inicio</a>
+    <img src="https://listindiario.com/files/main_image/files/fp/uploads/2026/10/03/6ac1b4503ce99.r_d.72-416-0.jpeg" alt="Noticia 1">
+    <h2>Detienen a haitiano acusado de la muerte de una señora de 78 años en San Cristóbal</h2>
+    <p class="datos"><time datetime="2026-10-03">03/10/2026</time> · Por Natanael Contreras · Sección Provincias</p>
+    <p>La <strong>Policía Nacional</strong> arrestó a un hombre señalado como presunto autor de la muerte de una mujer de 78 años, cuyo cuerpo fue hallado en su residencia. Según reportes oficiales, cámaras de vigilancia fueron clave para lograr la captura del individuo.</p>
+    <a class="leer" href="https://listindiario.com/la-republica/provincias/20261003/detienen-haitiano-presunto-autor-muerte-senora-78-anos-san-cristobal_924758.html" target="_blank">Leer noticia completa en Listín Diario</a>
+  </section>
+
+  <section class="pagina-noticia" id="noticia2">
+    <a class="volver" href="#">← Volver al inicio</a>
+    <img src="https://listindiario.com/files/listing_secondary/files/fp/uploads/2026/02/21/699a1b611670b.r_d.554-398-0.jpeg" alt="Noticia 2">
+    <h2>Yiyo Sarante lamenta asesinato de su cuñada: “No existen palabras suficientes”</h2>
+    <p class="datos"><time datetime="2026-09-22">22/09/2026</time> · Por Natanael Contreras · Sección Entretenimiento</p>
+    <p>El destacado artista manifestó su consternación por la tragedia que enluta a su familia, pidiendo <em>mucha fortaleza</em> para sus seres queridos en este momento tan difícil.</p>
+    <a class="leer" href="https://listindiario.com/entretenimiento/20260921/yiyo-sarante-pide-fortaleza-julian-oro-duro-existen-palabras-aliviar-dolor-grande_923119.html" target="_blank">Leer noticia completa en Listín Diario</a>
+  </section>
+
+  <section class="pagina-noticia" id="noticia3">
+    <a class="volver" href="#">← Volver al inicio</a>
+    <img src="https://listindiario.com/files/listing_secondary/uploads/2026/09/18/6aadb183beec6.jpeg" alt="Noticia 3">
+    <h2>Encuentran cadáver de hombre con impacto de bala en El Seibo</h2>
+    <p class="datos"><time datetime="2026-09-18">18/09/2026</time> · Por Natanael Contreras · Sección Provincias</p>
+    <p>Agentes policiales y miembros de la fiscalía se presentaron al lugar del hallazgo en <strong>Arroyo Tabaco</strong> para levantar las evidencias pertinentes.</p>
+    <a class="leer" href="https://listindiario.com/la-republica/provincias/20260918/encuentran-cuerpo-vida-hombre-impacto-bala-cabeza-arroyo-tabaco-seibo_922782.html" target="_blank">Leer noticia completa en Listín Diario</a>
+  </section>
+
+  <section class="pagina-noticia" id="noticia4">
+    <a class="volver" href="#">← Volver al inicio</a>
+    <img src="https://listindiario.com/files/listing_secondary/uploads/2026/07/14/6a565d32ba48c.jpeg" alt="Noticia 4">
+    <h2>Se entrega expareja de joven hallada muerta en Santiago</h2>
+    <p class="datos"><time datetime="2026-07-14">14/07/2026</time> · Por Natanael Contreras · Sección República</p>
+    <p>El sospechoso fue trasladado a la dotación policial de Santiago para responder ante las acusaciones en su contra.</p>
+    <a class="leer" href="https://listindiario.com/la-republica/20260714/entrega-expareja-joven-hallada-asesinada-circunvalacion-norte-santiago_913848.html" target="_blank">Leer noticia completa en Listín Diario</a>
+  </section>
+
+  <section class="pagina-noticia" id="noticia5">
+    <a class="volver" href="#">← Volver al inicio</a>
+    <img src="https://listindiario.com/files/listing_secondary/uploads/2026/07/18/6a5bf7f696e87.png" alt="Noticia 5">
+    <h2>Prisión preventiva para una militar que mató a su suegra en Azua</h2>
+    <p class="datos"><time datetime="2026-07-30">30/07/2026</time> · Por Natanael Contreras · Sección Justicia</p>
+    <p>Un tribunal dictó la medida de coerción tras evaluar las pruebas preliminares del caso.</p>
+    <a class="leer" href="https://listindiario.com/la-republica/justicia/20260730/prision-preventiva-militar-mato-suegra-azua_916063.html" target="_blank">Leer noticia completa en Listín Diario</a>
+  </section>
+
+  <section class="pagina-noticia" id="noticia6">
+    <a class="volver" href="#">← Volver al inicio</a>
+    <img src="https://listindiario.com/files/listing_secondary/uploads/2026/08/21/6a88f794d8dac.png" alt="Noticia 6">
+    <h2>Se entrega “Iker El Rabioso” en Los Alcarrizos</h2>
+    <p class="datos"><time datetime="2026-08-21">21/08/2026</time> · Por Natanael Contreras · Sección República</p>
+    <p>El imputado se puso a disposición de las autoridades judiciales para responder por los hechos atribuidos.</p>
+    <a class="leer" href="https://listindiario.com/la-republica/20260821/entrega-iker-rabioso-implicado-muerte-dirigente-comunitario-alcarrizos_919107.html" target="_blank">Leer noticia completa en Listín Diario</a>
+  </section>
+
+  <footer class="pie">
+    <p>© 2026 Bloc de Noticias — Fotos y fuente: Listín Diario. Creado por Natanael Contreras.</p>
+  </footer>
+
+</body>
+</html>
